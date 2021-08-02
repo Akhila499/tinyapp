@@ -8,13 +8,16 @@ const urlDatabase = {
 };
 
 app.get("/", (req, res) => {
+  //const a = 1;
+  //res.send(`a = ${a}`)
   res.send("Hello!");
 });
 app.get("/urls.json", (req, res) => {
   res.json(urlDatabase);
 });
 app.get("/hello", (req, res) => {
-  res.send("<html><body>Hello <b>World</b></body></html>\n");
+ res.send("<html><body>Hello <b>World</b></body></html>\n");
+ //res.send(`a = ${a}`);
 });
 
 app.listen(PORT, () => {
