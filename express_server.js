@@ -8,19 +8,22 @@ const urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
   "9sm5xK": "http://www.google.com"
 };
+app.get("/urls", (req, res) => {
+  const templateVars = { urls: urlDatabase };
+  res.render("urls_index", templateVars);
+});
 
-app.get("/", (req, res) => {
-  //const a = 1;
-  //res.send(`a = ${a}`)
-  res.send("Hello!");
-});
-app.get("/urls.json", (req, res) => {
-  res.json(urlDatabase);
-});
 app.get("/hello", (req, res) => {
- res.send("<html><body>Hello <b>World</b></body></html>\n");
- //res.send(`a = ${a}`);
+  const templateVars = { greetings : "Hello World"};
+  res.render('hello', templateVars);
 });
+// app.get("/urls.json", (req, res) => {
+//   res.json(urlDatabase);
+// });
+// app.get("/hello", (req, res) => {
+//  res.send("<html><body>Hello <b>World</b></body></html>\n");
+//  //res.send(`a = ${a}`);
+// });
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
