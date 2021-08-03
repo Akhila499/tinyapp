@@ -22,6 +22,10 @@ app.post('/urls/:shortURL/delete', (req, res) => {
   delete urlDatabase[urlId];
   res.redirect('/urls');
 });
+app.post('/urls/:shortURL', (req, res) => {
+  urlDatabase[req.params.shortURL] = req.body.longURL;
+  res.redirect(`/urls`);
+});
 
 app.get("/urls/:shortURL", (req, res) => {
   
@@ -31,6 +35,7 @@ app.get("/urls/:shortURL", (req, res) => {
 
 
 app.get("/urls", (req, res) => {
+  console.log('changed again');
   const templateVars = { urls: urlDatabase };
   res.render("urls_index", templateVars);
 });
@@ -43,6 +48,8 @@ app.post("/urls", (req, res) => {
   res.redirect(`/urls/${shortURL}`);
   
 });
+
+
 
 app.get("/u/:shortURL", (req, res) => {
   console.log(res.statusCode);
