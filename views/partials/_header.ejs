@@ -8,10 +8,20 @@
       <div class="navbar-nav">
         <a class="nav-item nav-link" href="/urls">My URLs</a>
         <a class="nav-item nav-link" href="/urls/new">Create New URL</a>
-        <form method="POST" class="form-inline" action='/login'>
-          <input class="form-control" type="text" name="Username" placeholder="http://" style="width: 300px; margin: 1em">
-          <button type="submit" class="btn btn-primary">Submit</button>
-        </form>
+        
+        <% if(username) { %>
+          <span style= "color: #dee2e6;
+          padding: 7px;"><%= username %></span>
+          <form method= "POST" action = '/logout'>
+            <button type="submit" class="btn btn-primary">Logout</button>
+          </form>
+        <% } else { %>
+          <form method="POST" class="form-inline" action='/login'>
+            <input class="form-control" type="text" name="username" placeholder="username" style="width: 300px; margin: 0em 10px">
+            <button type="submit" class="btn btn-primary">Login</button>
+          </form>
+        <% } %>
+       
       </div>
     </div>
   </nav>
