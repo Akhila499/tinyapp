@@ -9,17 +9,19 @@
         <a class="nav-item nav-link" href="/urls">My URLs</a>
         <a class="nav-item nav-link" href="/urls/new">Create New URL</a>
         
-        <% if(username) { %>
+        <% if(user) { %>
           <span style= "color: #dee2e6;
-          padding: 7px;"><%= username %></span>
+          padding: 7px;"><%= user.email %></span>
           <form method= "POST" action = '/logout'>
+            
             <button type="submit" class="btn btn-primary">Logout</button>
           </form>
         <% } else { %>
-          <form method="POST" class="form-inline" action='/login'>
-            <input class="form-control" type="text" name="username" placeholder="username" style="width: 300px; margin: 0em 10px">
-            <button type="submit" class="btn btn-primary">Login</button>
-          </form>
+          
+           
+          <a href = '/login' class="nav-item nav-link"> login </a>
+          <a href = '/register' class="nav-item nav-link">register</a>
+         
         <% } %>
        
       </div>
