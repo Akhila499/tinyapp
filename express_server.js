@@ -19,12 +19,12 @@ const users = {
   "userRandomID": {
     id: "userRandomID", 
     email: "user@example.com", 
-    password: "purple-monkey-dinosaur"
+    password: "asd"
   },
  "user2RandomID": {
     id: "user2RandomID", 
     email: "user2@example.com", 
-    password: "dishwasher-funk"
+    password: "aassdd"
   }
 }
 
@@ -75,17 +75,35 @@ app.get('/login', (req, res) =>  {
 });
 
 app.post("/login", (req, res) => {
-  console.log(req.body);
-  
-  res.cookie('user_id', users[req.cookies['user_id']]);
-  
+  console.log('response body after login',req.body);
+  //checking for the email submitted through login form vs present in users object
+  if(checkingEmailIfAlreadyExists(users,req)){
+    //check for the password enter via form vs present in the users object
+    let flag = 0;
+    for(let total in users) {
+      //console.log('checking',users[total]['password'],req.body.password);
+      if(req.body.email === users[total]['email']){
+        if(users[total]['password'] === req.body.password){
+          console.log('password matched');
+          flag = 1;
+          res.cookie('user_id', users[total]['id']);
+        }
+      }
+       
+    }
+    if(flag !== 1 ){
+      res.status('403').send('password doesnt match');
+    }
+    
+  }else{
+    res.status('403').send('Email doesnt exists');
+  }
   res.redirect("/urls");
-  
 });
 
 app.post('/logout', (req, res) => {
   console.log('testing logout')
-  res.clearCookie('user_id',)
+  res.clearCookie('user_id')
   res.redirect('/urls');
 });
 
@@ -120,6 +138,10 @@ app.post('/register', (req, res) => {
   
   
 });
+
+function checkingForPasswordMatch(obj,req){
+  
+}
 
 function checkingEmailIfAlreadyExists(obj, req){
   for(let total in obj ){
