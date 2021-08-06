@@ -11,6 +11,9 @@ app.use(express.urlencoded({extended: true}));
 
 app.set("view engine", "ejs");
 
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
+
 const urlDatabase = {
   "b2xVn2": {
     longURL: "http://www.lighthouselabs.ca",
@@ -112,6 +115,8 @@ app.get('/login', (req, res) =>  {
 });
 
 app.post("/login", (req, res) => {
+
+  
   console.log('response body after login',req.body);
   //checking for the email submitted through login form vs present in users object
   if(checkingEmailIfAlreadyExists(users,req)){
@@ -120,7 +125,8 @@ app.post("/login", (req, res) => {
     for(let total in users) {
       //console.log('checking',users[total]['password'],req.body.password);
       if(req.body.email === users[total]['email']){
-        if(users[total]['password'] === req.body.password){
+        if(bcrypt.compareSync(req.body.password, users[total]['password'])){
+
           console.log('password matched');
           flag = 1;
           res.cookie('user_id', users[total]['id']);
@@ -158,14 +164,18 @@ app.get('/register', (req, res) => {
 
 app.post('/register', (req, res) => {
 
-  console.log(req.body);
+  
   const id = generateRandomString(5);
   if(req.body.email === '' || req.body.password === '') {
     return res.status('400').send('Invalid email or password');
   } 
   if(!checkingEmailIfAlreadyExists(users, req)){
     //if email is not in users then only add the new email into the users object
-    users[id] = {'id': id, 'email': req.body.email, 'password': req.body.password }
+    const password = req.body.password; // found in the req.params object
+    const hashedPassword = bcrypt.hashSync(password, 10);
+  
+    //console.log('hashed', hashedPassword);
+    users[id] = {'id': id, 'email': req.body.email, 'password': hashedPassword }
     //setting cookies from server in the browser
     res.cookie('user_id', id);
     console.log(users);
