@@ -1,6 +1,6 @@
 const { assert } = require('chai');
 
-const { getUserByEmail } = require('../helpers.js');
+const { getUserByEmail, generateRandomString, urlsForUser } = require('../helpers.js');
 
 const testUsers = {
   "userRandomID": {
@@ -14,7 +14,16 @@ const testUsers = {
     password: "dishwasher-funk"
   }
 };
-
+const urlDatabase = {
+  "b2xVn2": {
+    longURL: "http://www.lighthouselabs.ca",
+    userID: "userRandomID"
+  },
+  '9sm5xK':{
+    longURL: "http://www.google.com",
+    userID: "user2RandomID"
+  }
+};
 describe('getUserByEmail', function() {
   it('should return a user with valid email', function() {
     const user = getUserByEmail("user@example.com", testUsers)
@@ -33,5 +42,21 @@ describe('getUserByEmail', function() {
     // Write your assert statement here
 
     assert.deepEqual(user,expectedOutput);
+  });
+});
+
+describe('generateRandomString', function() {
+  it('should return 6 if length is 6', function() {
+    const strlength = generateRandomString(6).length;
+    const expectedOutput = 6;
+    assert.equal(strlength, expectedOutput);
+  });
+});
+
+describe('urlsForUser', function() {
+  it('should return false if condition matches', function() {
+    const actual = urlsForUser(testUsers['userRandomID']['id'],urlDatabase['b2xVn2']);
+    const expectedOutput = false;
+    assert.equal(actual, expectedOutput);
   });
 });

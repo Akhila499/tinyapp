@@ -28,6 +28,6 @@ const urlsForUser = function(id, input){
     return false;
   }
   
- };
+};
 
  module.exports = { getUserByEmail, generateRandomString, urlsForUser};

@@ -155,7 +155,7 @@ app.post('/register', (req, res) => {
   users[id] = {'id': id, 'email': req.body.email, 'password': hashedPassword }
 
   //setting cookies from server in the browser
-  //req.session['user_id'] = id;
+  req.session['user_id'] = id;
   res.redirect('/urls');
 });
 
