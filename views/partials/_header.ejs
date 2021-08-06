@@ -12,16 +12,15 @@
         
         <% if(user) { %>
           <span style= "color: #dee2e6;
-          padding: 7px;"><%= user.email %></span>
+          padding: 7px;">Logged in as <%= user.email %></span>
           <form method= "POST" action = '/logout'>
-            
             <button type="submit" class="btn btn-primary">Logout</button>
           </form>
         <% } else { %>
           
            
-          <a href = '/login' class="nav-item nav-link"> login </a>
-          <a href = '/register' class="nav-item nav-link">register</a>
+          <a href = '/login' class="nav-item nav-link"> Login </a>
+          <a href = '/register' class="nav-item nav-link">Register</a>
          
         <% } %>
        
