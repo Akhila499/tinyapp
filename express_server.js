@@ -38,11 +38,26 @@ const users = {
 
 
 app.get("/urls/new", (req, res) => {
-  const templateVars = { user: users[req.session['user_id']] };
-  res.render("urls_new", templateVars);
+  //console.log(req.session.user_id, users[req.session.user_id]);
+  for(let user in users){
+    //console.log(user['id'], req.session.user_id);
+    if(users[req.session.user_id]===undefined){
+      return res.redirect('/login');
+    }
+    
+    const templateVars = { user: users[req.session['user_id']] };
+    return res.render("urls_new", templateVars);
+  }
+  
 });
 
 app.post('/urls/:shortURL/delete', (req, res) => {
+  if(!urlDatabase[req.params.shortURL]){
+    return res.send('Invalid Url request');
+  }
+  if(urlDatabase[req.params.shortURL]['userID'] !== req.session.user_id){
+    return res.send('You cannot delete this');
+  }
   const urlId = req.params.shortURL;
   delete urlDatabase[urlId]['userID'];
   res.redirect('/urls');
@@ -57,19 +72,28 @@ app.get("/urls/:shortURL", (req, res) => {
 
   const shortURL = req.params.shortURL;
   const userId = req.session['user_id'];
-    
+  if(!urlDatabase[shortURL]){
+    return res.send('Invalid request');
+  }
+  if( urlDatabase[shortURL].userID !== userId){
+    return res.send('You cannt view this page');
+  }
   if (!urlsForUser(userId,urlDatabase[shortURL])) {
     const templateVars = { shortURL: req.params.shortURL, 'longURL': urlDatabase[req.params.shortURL]['longURL'],user: users[userId]};
-    res.render("urls_show", templateVars);
+    return res.render("urls_show", templateVars);
   } else {
-    res.status('403').send(`you cannot view this page. <html><a href='/urls'> Click here to go back</a></html>`);
+    return res.status('403').send(`you cannot view this page. <html><a href='/urls'> Click here to go back</a></html>`);
   }
 
 });
 
 
 app.get("/urls", (req, res) => {
+
   const user = users[req.session['user_id']] ? users[req.session['user_id']] : undefined;
+  if(!user){
+    return res.redirect('/login');
+  }
   let myUrls = [];
   for (let shorturl in urlDatabase) {
     if (urlDatabase[shorturl]['userID'] === req.session['user_id']) {
@@ -77,7 +101,7 @@ app.get("/urls", (req, res) => {
     }
   }
   const templateVars = { urls: myUrls, user, urlDatabase};
-  res.render("urls_index", templateVars);
+  return res.render("urls_index", templateVars);
 });
 
 app.post("/urls", (req, res) => {
@@ -88,16 +112,16 @@ app.post("/urls", (req, res) => {
       longURL: req.body.longURL,
       userID: req.session.user_id
     };
-    res.redirect(`/urls/${shortURL}`);
+    return res.redirect(`/urls/${shortURL}`);
   } else {
-    res.redirect('/login');
+    return res.redirect('/login');
   }
   
   
 });
 app.get('/login', (req, res) =>  {
   const templateVars = { user: null };
-  res.render('login',templateVars);
+  return res.render('login',templateVars);
 });
 
 app.post("/login", (req, res) => {
@@ -109,7 +133,7 @@ app.post("/login", (req, res) => {
       req.session.user_id = user['id'];
       return res.redirect("/urls");
     }
-    res.status('403').send(`password doesnt match <html><a href='/login'> Try again </a></html>`);
+    return res.status('403').send(`password doesnt match <html><a href='/login'> Try again </a></html>`);
   }
   res.status('403').send(`Email doesnt exists <html><a href='/login'> Try again</a></html>`);
   res.redirect("/urls");
@@ -122,9 +146,15 @@ app.post('/logout', (req, res) => {
 });
 
 app.get("/u/:shortURL", (req, res) => {
-  console.log(res.statusCode);
+  
+  if(!urlDatabase[req.params.shortURL]){
+    return res.send('Invalid Url request');
+  }
+  if(urlDatabase[req.params.shortURL]['userID'] !== req.session.user_id){
+    return res.send('You cannot view this page');
+  }
   const longURL = urlDatabase[req.params.shortURL]['longURL'];
-  console.log('u - longUrl:', longURL);
+  //console.log('u - longUrl:', longURL);
   res.redirect(longURL);
 });
 
